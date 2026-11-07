@@ -1,8 +1,7 @@
 // Contrôle visuel de la compression : recadrage 1:1 de l'original (ramené à la taille de sortie par le
 // navigateur) à gauche, de la sortie compressée à droite. Réglages par défaut, mode « Compresser ».
-//   RENOMMEUR_PW=… RENOMMEUR_LOT='["reels-lourds/pieuvre1.jpg"]' node <pilote-cdp> dev/essai-qualite.mjs <dossier-captures>
+//   RENOMMEUR_LOT='["reels-lourds/pieuvre1.jpg"]' node <pilote-cdp> dev/essai-qualite.mjs <dossier-captures>
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 const LOT = JSON.parse(process.env.RENOMMEUR_LOT ?? '["reels-lourds/pieuvre1.jpg"]');
 
 export const scenarios = [
@@ -10,7 +9,7 @@ export const scenarios = [
     nom: 'Comparaison 1:1',
     async run(p, log) {
       await p.goto(BASE, { width: 1400, height: 900 });
-      await p.eval(`await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})}); localStorage.removeItem('renommeur.squeeze');`);
+      await p.eval(`localStorage.removeItem('renommeur.squeeze');`);
       await p.goto(BASE, { width: 1400, height: 900 });
       for (const [i, n] of LOT.entries()) {
         const info = await p.eval(`

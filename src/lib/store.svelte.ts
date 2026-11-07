@@ -68,7 +68,6 @@ const LATER_IMAGE_BYTES = 200_000;
 const UNLIMITED_COST = 3;
 
 export const app = $state({
-  auth: 'unknown' as 'unknown' | 'out' | 'in',
   settings: null as Settings | null,
   apiProblem: null as string | null,
   fatal: null as string | null,
@@ -169,14 +168,12 @@ export function remember(key: 'context' | 'lang' | 'mode' | 'squeeze', value: st
   }
 }
 
-/* ---------- Session ---------- */
+/* ---------- Réglages du serveur ---------- */
 
-export async function loadSession(): Promise<void> {
+export async function loadSettings(): Promise<void> {
   try {
-    const session = await api.session();
-    app.settings = session.settings ?? null;
-    app.auth = session.authenticated ? 'in' : 'out';
-    if (session.authenticated) void checkApi();
+    app.settings = await api.settings();
+    void checkApi();
   } catch (e) {
     app.fatal = e instanceof ApiError ? e.message : 'Impossible de joindre le serveur.';
   }
@@ -189,18 +186,6 @@ async function checkApi(): Promise<void> {
   } catch (e) {
     app.apiProblem = e instanceof ApiError ? e.message : 'L’API Claude ne répond pas.';
   }
-}
-
-export async function login(password: string): Promise<void> {
-  await api.login(password);
-  await loadSession();
-  // Reprend les lots interrompus par l'expiration de la session.
-  pumpNaming();
-}
-
-export async function logout(): Promise<void> {
-  await api.logout().catch(() => undefined);
-  app.auth = 'out';
 }
 
 /* ---------- Ajout et retrait de fichiers ---------- */
@@ -572,11 +557,6 @@ async function sendBatch(ids: string[]): Promise<void> {
     }
   } catch (e) {
     const error = e instanceof ApiError ? e : new ApiError('Erreur inattendue.', 0, 'unknown', true);
-    if (error.status === 401) {
-      for (const entry of entries) if (entry.status === 'naming') entry.status = 'queued';
-      app.auth = 'out';
-      return;
-    }
     for (const id of ids) {
       const entry = byId(id);
       if (entry?.status === 'naming') fail(entry, error.message, error.retryable);

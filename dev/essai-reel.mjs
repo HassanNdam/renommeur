@@ -1,8 +1,7 @@
 // Essai réel de bout en bout : dépôt de photos dans l'interface, nommage par l'API Claude, lecture des noms.
-//   RENOMMEUR_PW=… node <pilote-cdp> dev/essai-reel.mjs <dossier-captures>
+//   node <pilote-cdp> dev/essai-reel.mjs <dossier-captures>
 // Consomme de vrais jetons. Photos dans dev/fixtures/reel/ ; contexte réglable par RENOMMEUR_CONTEXTE.
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 const CONTEXTE =
   process.env.RENOMMEUR_CONTEXTE ??
   'Pixim, agence de communication à Saumur : visuels de nos réalisations (vidéo, print, sites web) pour la page Réalisations du site';
@@ -13,7 +12,6 @@ export const scenarios = [
     nom: 'Nommage réel',
     async run(p, log) {
       await p.goto(BASE, { width: 1280, height: 900 });
-      await p.eval(`await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})});`);
       await p.goto(BASE, { width: 1280, height: 900 });
       await p.eval(`
         const ctx = document.querySelector('#context');

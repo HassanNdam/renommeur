@@ -14,10 +14,6 @@ return [
     // créée dans un espace de travail, le cas conseillé.
     'workspace_id' => '',
 
-    // Empreinte du mot de passe commun de l'équipe. Pour la générer :
-    //   php -r "echo password_hash('le-mot-de-passe', PASSWORD_DEFAULT), PHP_EOL;"
-    'password_hash' => '',
-
     // Modèle utilisé pour nommer les fichiers (coûts mesurés sur un lot réel, le 23/10/2026) :
     //   claude-sonnet-5-5 conseillé : lit le texte des images, ~2,20 $ les 1 000 images
     //   claude-opus-5-5   qualité équivalente, plus lent, ~4,40 $ les 1 000 images
@@ -29,9 +25,6 @@ return [
 
     // Fichiers envoyés au modèle par requête (1 à 12).
     'batch_size' => 8,
-
-    // Durée d'une session avant de devoir retaper le mot de passe.
-    'session_hours' => 12,
 
     // true : noms factices sans appeler l'API (démonstration, développement).
     'mock' => false,

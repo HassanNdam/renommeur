@@ -1,7 +1,6 @@
 // Vérifie dans la vraie interface les défauts relevés par la revue de la compression.
-//   RENOMMEUR_PW=… node <pilote-cdp> dev/verif-corrections.mjs <dossier-captures>
+//   node <pilote-cdp> dev/verif-corrections.mjs <dossier-captures>
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 const REELS = ['pieuvre1.jpg', 'pieuvre5.jpg', 'aladdin1.jpg', 'grandchenille3.jpg', 'photo-1507754988072-8667848efc79.jpg', 'background-04.png', 'conductrice-flexibus-audouard-voyages.png'];
 
 // Cherche des métadonnées dans des octets : segment EXIF, IFD GPS (0x8825, dans les deux boutismes), XMP, chunks PNG de texte.
@@ -29,7 +28,7 @@ export const scenarios = [
     nom: 'Métadonnées des sorties',
     async run(p, log) {
       await p.goto(BASE, { width: 1280, height: 900 });
-      await p.eval(`await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})}); localStorage.removeItem('renommeur.squeeze');`);
+      await p.eval(`localStorage.removeItem('renommeur.squeeze');`);
       await p.goto(BASE, { width: 1280, height: 900 });
       await p.eval(`window.__renommeur.setMode('compress'); await new Promise(r => setTimeout(r, 300));`);
       await add(p, [...REELS.map((f) => 'reels-lourds/' + f), 'compression/photo-exif6.jpg', 'vitrine.jpg']);

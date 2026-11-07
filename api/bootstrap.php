@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /*
- * Socle commun des points d'entrée de l'API : configuration, session,
- * réponses JSON et limitation des tentatives de connexion.
+ * Socle commun des points d'entrée de l'API : configuration, réponses JSON,
+ * journal de consommation et client de l'API Claude.
  */
 
 const APP_VERSION = '0.1.0';
@@ -20,11 +20,9 @@ function config_defaults(): array
     return [
         'api_key' => '',
         'workspace_id' => '',
-        'password_hash' => '',
         'model' => 'claude-sonnet-5-5',
         'effort' => 'low',
         'batch_size' => 8,
-        'session_hours' => 12,
         'mock' => false,
     ];
 }
@@ -100,57 +98,7 @@ function clean_text(string $text, int $max): string
     return trim(mb_substr($text, 0, $max));
 }
 
-function start_session(): void
-{
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        return;
-    }
-    $https = ($_SERVER['HTTPS'] ?? '') === 'on'
-        || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'
-        || (int) ($_SERVER['SERVER_PORT'] ?? 0) === 443;
-    // Le cookie ne vaut que pour le dossier de l'application.
-    $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/api/x.php', 2)), '/') . '/';
-    session_name('pixim_renommeur');
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => $base,
-        'secure' => $https,
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-    ini_set('session.use_strict_mode', '1');
-    ini_set('session.gc_maxlifetime', (string) (config()['session_hours'] * 3600));
-    session_start();
-}
-
-function is_authenticated(): bool
-{
-    // Pas de cookie, pas de session à ouvrir : un simple visiteur n'en reçoit pas.
-    if (session_status() !== PHP_SESSION_ACTIVE && !isset($_COOKIE['pixim_renommeur'])) {
-        return false;
-    }
-    start_session();
-    $at = $_SESSION['auth_at'] ?? null;
-    if (!is_int($at)) {
-        return false;
-    }
-    if (time() - $at > config()['session_hours'] * 3600) {
-        $_SESSION = [];
-        return false;
-    }
-    return true;
-}
-
-function require_auth(): void
-{
-    if (!is_authenticated()) {
-        json_error(401, 'unauthenticated', 'Session expirée : reconnectez-vous.');
-    }
-    // Libère le verrou de session : les lots peuvent alors partir en parallèle.
-    session_write_close();
-}
-
-/** Dossier d'écriture de l'application (journal, limitation des tentatives). */
+/** Dossier d'écriture de l'application (journal de consommation). */
 function var_dir(): string
 {
     $dir = __DIR__ . '/var';
@@ -159,25 +107,6 @@ function var_dir(): string
         @file_put_contents($dir . '/.htaccess', "Require all denied\n");
     }
     return $dir;
-}
-
-/**
- * Au plus 8 mots de passe erronés par adresse IP et par quart d'heure.
- * Retourne le nombre de secondes à attendre, 0 si la tentative est permise.
- */
-function login_wait_seconds(string $ip, bool $recordFailure = false): int
-{
-    $window = 900;
-    $max = 8;
-    $file = var_dir() . '/login-' . hash('sha256', $ip) . '.json';
-    $now = time();
-    $attempts = is_file($file) ? (json_decode((string) file_get_contents($file), true) ?: []) : [];
-    $attempts = array_values(array_filter($attempts, fn ($t) => is_int($t) && $t > $now - $window));
-    if ($recordFailure) {
-        $attempts[] = $now;
-        @file_put_contents($file, json_encode($attempts), LOCK_EX);
-    }
-    return count($attempts) >= $max ? max(1, $attempts[0] + $window - $now) : 0;
 }
 
 /** Une ligne par appel au modèle, pour suivre la consommation. */

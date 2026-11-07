@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { app, loadSession } from './lib/store.svelte';
-  import Login from './components/Login.svelte';
+  import { app, loadSettings } from './lib/store.svelte';
   import Workspace from './components/Workspace.svelte';
   import Logo from './components/Logo.svelte';
 
-  void loadSession();
+  void loadSettings();
 </script>
 
 {#if app.fatal}
@@ -14,10 +13,8 @@
     <p class="fatal">{app.fatal}</p>
     <button class="btn" onclick={() => location.reload()}>Réessayer</button>
   </main>
-{:else if app.auth === 'in'}
+{:else}
   <Workspace />
-{:else if app.auth === 'out'}
-  <Login />
 {/if}
 
 <style>
