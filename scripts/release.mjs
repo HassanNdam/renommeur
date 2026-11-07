@@ -10,6 +10,12 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const out = join(root, 'release', 'renommeur');
 const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 
+const apiVersion = readFileSync(join(root, 'api', 'bootstrap.php'), 'utf8').match(/const APP_VERSION = '([^']*)';/)?.[1];
+if (apiVersion !== version) {
+  console.error(`Versions différentes : package.json ${version}, api/bootstrap.php ${apiVersion}. Lancez « node scripts/sync-version.mjs ».`);
+  process.exit(1);
+}
+
 if (!existsSync(join(root, 'api', 'vendor', 'autoload.php'))) {
   console.error('api/vendor absent : lancez « composer install » dans api/ avant la livraison.');
   process.exit(1);

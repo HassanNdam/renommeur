@@ -7,7 +7,7 @@ declare(strict_types=1);
  * journal de consommation et client de l'API Claude.
  */
 
-const APP_VERSION = '0.1.0';
+const APP_VERSION = '0.2.0';
 
 require __DIR__ . '/vendor/autoload.php';
 

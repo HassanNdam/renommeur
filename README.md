@@ -90,6 +90,8 @@ En Renommer, aucun fichier n'est modifié : tous gardent leurs métadonnées, po
 
 ## Développement local
 
+Branches, commits et publication d'une version : voir [CONTRIBUTING.md](CONTRIBUTING.md) (git flow).
+
 Prérequis : Node 22+, PHP 8.1+ (celui de Laragon convient) et Composer.
 
 ```bash
