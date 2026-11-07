@@ -1,0 +1,11 @@
+node_modules/
+dist/
+release/
+.tmp/
+api/vendor/
+api/var/
+api/config.php
+dev/fixtures/
+archives/
+# Paquets de livraison FTP
+renommeur-*.zip

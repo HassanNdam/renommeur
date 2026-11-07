@@ -1,0 +1,8 @@
+Options -Indexes
+
+# Seuls les points d'entrée de l'API sont joignables depuis le web.
+<FilesMatch "^(bootstrap|config|config\.sample)\.php$|^composer\.(json|lock)$|\.(md|csv|log|json)$">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 404 ^.*/api/(vendor|var)(/.*)?$

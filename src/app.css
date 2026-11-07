@@ -1,0 +1,478 @@
+/* Charte Pixim (pixim.fr) : noir, rouge, fond chaud, angles droits. */
+:root {
+  /* Charte */
+  --noir: #000;
+  --blanc: #fff;
+  --fond: #f4f3ef;
+  --rouge: #c4281c; /* carré de titre, action principale, erreur, curseur : 5,7:1 blanc, 5,2:1 fond */
+  --rouge-fonce: #a11f15; /* survol du bouton rouge (blanc dessus 7,7:1) */
+  --gris: #58585a; /* texte secondaire : 7,1:1 blanc, 6,4:1 fond */
+  --ia: #10819e; /* traitement en cours (nommage, compression), formes seulement */
+  --ia-texte: #0c6b85; /* texte « En file », « Nommage », « Compression » : 6,1:1 */
+  --vert: #2e6b4f; /* nommé : 6,3:1 blanc */
+  --ocre: #d19a1e; /* avertissement : forme seulement, toujours doublée d'un texte */
+
+  /* Neutres dérivés du fond (contrastes vérifiés) */
+  --gris-doux: #6e6d68; /* placeholder, n°, notes : 5,2:1 blanc, 4,7:1 fond */
+  --trait: #84837d; /* bord des champs, icônes au repos : 3,8:1 blanc, 3,4:1 fond */
+  --filet: #e3e1d9; /* séparateurs non interactifs */
+  --survol: #faf9f6; /* ligne survolée */
+  --actif: #f1efe9; /* ligne qui contient le focus */
+  --voile-04: rgb(0 0 0 / 0.04); /* survol des textes modifiables */
+  --voile-08: rgb(0 0 0 / 0.08); /* filet intérieur des vignettes */
+  --vert-voile: rgb(46 107 79 / 0.1); /* lueur d'arrivée d'un nom */
+
+  /* Sur noir */
+  --blanc-72: rgb(255 255 255 / 0.72); /* texte secondaire : 10,6:1 */
+  --blanc-40: rgb(255 255 255 / 0.4); /* bord des boutons contour : 3,7:1 */
+  --blanc-15: rgb(255 255 255 / 0.15); /* rail de progression, séparateurs */
+
+  /* Trame de points */
+  --trame: rgb(0 0 0 / 0.1);
+  --trame-douce: rgb(0 0 0 / 0.05);
+  --trame-sur-noir: rgb(255 255 255 / 0.15);
+
+  /* Familles de fichiers : teinte à 14 % sur les vignettes sans aperçu */
+  --f-document: #2f5a9e;
+  --f-tableur: #2e6b4f;
+  --f-diapo: #d19a1e;
+  --f-pdf: #9b3e63;
+  --f-media: #5e4a82;
+
+  --font-display: 'Funnel Display', 'Montserrat Variable', sans-serif;
+  --font-text: 'Montserrat Variable', 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* Échelle fixe. 13 et 15 sont réservés à la monospace (noms de fichiers). */
+  --t-12: 0.75rem;
+  --t-13: 0.8125rem;
+  --t-14: 0.875rem;
+  --t-15: 0.9375rem;
+  --t-16: 1rem;
+  --t-20: 1.25rem;
+  --t-24: 1.5rem;
+  --t-32: 2rem;
+  --t-48: 3rem;
+  --t-64: 4rem;
+
+  --s4: 4px;
+  --s8: 8px;
+  --s12: 12px;
+  --s16: 16px;
+  --s24: 24px;
+  --s32: 32px;
+  --s48: 48px;
+  --s64: 64px;
+
+  --contenu: 1280px;
+  --gutter: 40px;
+  --bar-h: 68px; /* 4 px de progression + 64 px */
+
+  --vite: 120ms;
+  --moyen: 200ms;
+  --lent: 320ms;
+  --courbe: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--trait) transparent;
+}
+
+/* Le défilement au clavier s'arrête avant la tête de liste collante et la barre fixe. */
+html:has(.workspace.has-files) {
+  scroll-padding-top: 96px;
+  scroll-padding-bottom: calc(var(--bar-h) + var(--s16) + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 719px) {
+  html:has(.workspace.has-files) {
+    scroll-padding-top: 64px;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--fond);
+  background-image: radial-gradient(var(--trame) 1px, transparent 1.3px);
+  background-size: 24px 24px;
+  color: var(--noir);
+  font: 400 var(--t-16) / 1.5 var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Trame atténuée derrière une liste chargée. */
+body:has(.workspace.has-files) {
+  background-image: radial-gradient(var(--trame-douce) 1px, transparent 1.3px);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  border-radius: 0;
+}
+
+input,
+textarea {
+  caret-color: var(--rouge);
+}
+
+::placeholder {
+  color: var(--gris-doux);
+  opacity: 1;
+}
+
+::selection {
+  background: var(--noir);
+  color: var(--blanc);
+}
+
+:focus-visible {
+  outline: 2px solid var(--noir);
+  outline-offset: 2px;
+}
+
+.sur-noir :focus-visible,
+.sheet :focus-visible {
+  outline-color: var(--blanc);
+}
+
+/* Le carré rouge qui ponctue les titres du site. Un seul par écran. */
+.point::after {
+  content: '';
+  display: inline-block;
+  width: 0.2em;
+  height: 0.2em;
+  margin-left: 0.07em;
+  background: var(--rouge);
+}
+
+/* Titre centré : le carré déborde, c'est le mot qui est sur l'axe. */
+.point-centre::after {
+  margin-right: -0.27em;
+}
+
+/* Boutons (charte : noirs, rectangulaires, capitales 14 px) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s8);
+  min-height: 44px;
+  padding: 0 var(--s24);
+  border: 1px solid var(--noir);
+  background: var(--noir);
+  color: var(--blanc);
+  font-size: var(--t-14);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--vite) var(--courbe),
+    border-color var(--vite) var(--courbe),
+    color var(--vite) var(--courbe);
+}
+
+.btn:hover {
+  background: var(--rouge);
+  border-color: var(--rouge);
+}
+
+.btn[aria-busy='true'] {
+  cursor: progress;
+}
+
+.btn-s {
+  min-height: 36px;
+  padding: 0 var(--s16);
+}
+
+.btn-contour {
+  background: transparent;
+  color: var(--noir);
+}
+
+.btn-contour:hover {
+  background: var(--noir);
+  border-color: var(--noir);
+  color: var(--blanc);
+}
+
+.btn-rouge {
+  background: var(--rouge);
+  border-color: var(--rouge);
+}
+
+.btn-rouge:hover {
+  background: var(--rouge-fonce);
+  border-color: var(--rouge-fonce);
+}
+
+/* Pas de .btn:disabled : une action indisponible est absente ou expliquée, jamais grisée. */
+
+.btn-texte {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: var(--t-14);
+  font-weight: 500;
+  text-decoration: underline 1px;
+  text-underline-offset: 4px;
+}
+
+.btn-texte:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Bouton texte dans une ligne de 16 px : cible de 36 px sans élargir la ligne. */
+.btn-texte.inline {
+  min-height: 0;
+  padding: 10px 4px;
+  margin: -10px -4px;
+}
+
+/* Au doigt : cibles de 44 px. */
+@media (pointer: coarse) {
+  .btn-texte {
+    min-height: 44px;
+  }
+
+  .btn-texte.inline {
+    padding-block: 14px;
+    margin-block: -14px;
+  }
+}
+
+/* Valeur remplacée (poids, dimensions) : le trait de correcteur gris, comme l'ancien nom. */
+.barre {
+  position: relative;
+  white-space: nowrap;
+}
+
+.barre::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 1px);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Deux libellés empilés dans la même cellule : la largeur ne bouge pas. */
+.pile {
+  display: inline-grid;
+}
+
+.pile > * {
+  grid-area: 1 / 1;
+}
+
+.pile > .off {
+  visibility: hidden;
+}
+
+.champ-label {
+  display: block;
+  font-size: var(--t-14);
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.champ {
+  border: 1px solid var(--trait);
+  background: var(--blanc);
+  transition:
+    border-color var(--vite) var(--courbe),
+    box-shadow var(--vite) var(--courbe);
+}
+
+.champ:hover {
+  border-color: var(--gris);
+}
+
+/* Contour transparent : invisible ici, mais redessiné en mode couleurs forcées. */
+.champ:focus {
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  border-color: var(--noir);
+  box-shadow: inset 0 0 0 1px var(--noir);
+}
+
+.champ[aria-invalid='true'] {
+  border-color: var(--rouge);
+  box-shadow: inset 0 0 0 1px var(--rouge);
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--trait);
+  font: 400 var(--t-12) / 1 var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  kbd {
+    display: none;
+  }
+}
+
+/* Écrans centrés (connexion, erreur fatale) : le logo seul en haut, au milieu de la page. */
+.splash-top {
+  display: flex;
+  justify-content: center;
+  padding: var(--s32) var(--gutter) 0;
+}
+
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(400px, 100% - 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 12vh 0 var(--s48);
+  text-align: center;
+}
+
+.splash h1 {
+  font-size: var(--t-64);
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+@media (max-width: 479px) {
+  .splash h1 {
+    font-size: var(--t-48);
+  }
+}
+
+/* Feuille d'actions mobile : popover partagé, jamais un par ligne. */
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--s8) 0 calc(var(--s8) + env(safe-area-inset-bottom));
+  border: 0;
+  background: var(--noir);
+  color: var(--blanc);
+}
+
+.sheet::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.sheet-titre {
+  margin: 0;
+  padding: var(--s8) var(--gutter) var(--s12);
+  font: 400 var(--t-12) / 1.4 var(--font-mono);
+  color: var(--blanc-72);
+  overflow-wrap: anywhere;
+}
+
+.sheet button {
+  display: flex;
+  align-items: center;
+  gap: var(--s12);
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--gutter);
+  border: 0;
+  border-top: 1px solid var(--blanc-15);
+  background: none;
+  color: var(--blanc);
+  font-size: var(--t-16);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sheet :focus-visible {
+  outline-offset: -2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .sheet {
+    transition:
+      translate 250ms var(--courbe),
+      display 250ms allow-discrete,
+      overlay 250ms allow-discrete;
+  }
+
+  .sheet:not(:popover-open) {
+    translate: 0 100%;
+  }
+
+  @starting-style {
+    .sheet:popover-open {
+      translate: 0 100%;
+    }
+  }
+}

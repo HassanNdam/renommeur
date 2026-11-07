@@ -1,0 +1,33 @@
+Options -Indexes
+DirectoryIndex index.html
+
+# Le lecteur PDF charge un module .mjs : sans ce type, le navigateur le refuse.
+AddType text/javascript .mjs
+# Codecs de compression : servis en application/wasm, ils se compilent en flux (sinon repli plus lent).
+AddType application/wasm .wasm
+# licences.txt est en UTF-8 : sans charset, le navigateur en abîme les accents.
+AddCharset utf-8 .txt
+
+# Gzip des textes, des scripts (pdf.worker : 1,26 Mo) et des codecs, sans dépendre du réglage d'OVH.
+# AddOutputFilterByType vient de mod_filter : sans les IfModule, un module absent donnerait une erreur 500.
+<IfModule mod_deflate.c>
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml application/wasm
+    </IfModule>
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "same-origin"
+    Header always set X-Frame-Options "DENY"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self' blob: data:; worker-src 'self' blob:; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# Les fichiers de build portent une empreinte dans leur nom : cache long.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|mjs|css|woff2|svg|png|wasm)$">
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+</IfModule>

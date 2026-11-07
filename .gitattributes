@@ -1,0 +1,7 @@
+# Fins de ligne Unix dans le dépôt comme sur le poste (le serveur OVH est sous Linux).
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.wasm binary
+*.zip binary
+*.woff2 binary
