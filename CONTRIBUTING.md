@@ -81,7 +81,7 @@ npm version 0.3.0 --no-git-tag-version
 git commit -am "Version 0.3.0"
 ```
 
-Vérifier, fabriquer le paquet et le contrôler (étapes 3 et 7 de « Mise en ligne sur OVH » dans le README) :
+Vérifier, fabriquer le paquet et le contrôler (étapes 3 et 7 de [Mise en ligne](docs/deploiement.md)) :
 
 ```bash
 npm run release

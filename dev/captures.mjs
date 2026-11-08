@@ -1,4 +1,4 @@
-// Captures et contrôles de comportement, à lancer avec un pilote Chrome DevTools :
+// Captures et contrôles de comportement, à lancer avec un pilote Chrome DevTools (voir dev/README.md) :
 //   node <pilote-cdp> dev/captures.mjs <dossier-captures>
 // Il faut `npm run api` et `npm run dev` lancés. Les états sont posés via window.__renommeur (dev).
 const BASE = 'http://localhost:5173/';
