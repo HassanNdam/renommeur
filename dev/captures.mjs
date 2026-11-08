@@ -1,8 +1,7 @@
-// Captures et contrôles de comportement, à lancer avec un pilote Chrome DevTools :
-//   RENOMMEUR_PW=… node <pilote-cdp> dev/captures.mjs <dossier-captures>
+// Captures et contrôles de comportement, à lancer avec un pilote Chrome DevTools (voir dev/README.md) :
+//   node <pilote-cdp> dev/captures.mjs <dossier-captures>
 // Il faut `npm run api` et `npm run dev` lancés. Les états sont posés via window.__renommeur (dev).
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 
 const FIXTURES = [
   'IMG_2034.JPG',
@@ -37,12 +36,6 @@ async function shot(p, name) {
   return p.shot(name);
 }
 
-async function login(p) {
-  await p.eval(`await fetch('api/logout.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
-    const r = await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})});
-    return r.status;`);
-}
-
 async function seed(p, { apiProblem = null, plan = PLAN, names = FIXTURES } = {}) {
   await p.eval(`
     const R = window.__renommeur;
@@ -66,16 +59,9 @@ async function seed(p, { apiProblem = null, plan = PLAN, names = FIXTURES } = {}
 
 export const scenarios = [
   {
-    nom: 'Connexion',
+    nom: 'Erreur fatale',
     async run(p, log) {
-      await p.goto(BASE, { width: 1280, height: 860 });
-      await p.eval(`await fetch('api/logout.php', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'}); location.reload();`);
-      await p.sleep(1500);
-      log(await shot(p, '01-connexion-1280'));
-      await p.eval(`document.querySelector('form button[type=submit]').click(); await new Promise(r => setTimeout(r, 300));`);
-      log(await shot(p, '02-connexion-erreur-1280'));
       await p.goto(BASE, { width: 375, height: 812 });
-      log(await shot(p, '03-connexion-375'));
       await p.eval(`window.__renommeur.app.fatal = 'Impossible de joindre le serveur.';`);
       log(await shot(p, '03b-erreur-fatale-375'));
     },
@@ -84,7 +70,6 @@ export const scenarios = [
     nom: 'Espace vide',
     async run(p, log) {
       await p.goto(BASE, { width: 1280, height: 860 });
-      await login(p);
       await p.goto(BASE, { width: 1280, height: 860 });
       await p.sleep(1500);
       log(await shot(p, '04-vide-avec-bandeau-1280'));

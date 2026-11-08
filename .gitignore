@@ -9,3 +9,6 @@ dev/fixtures/
 archives/
 # Paquets de livraison FTP
 renommeur-*.zip
+
+# Configuration locale des éditeurs et assistants
+.claude/

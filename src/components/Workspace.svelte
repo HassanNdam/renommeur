@@ -6,7 +6,6 @@
     addFiles,
     app,
     clearAll,
-    logout,
     nameParts,
     outgoing,
     remember,
@@ -363,7 +362,6 @@
   </div>
   <div class="meta">
     {#if app.settings?.mock}<span class="badge" title="Noms fictifs : rien n’est envoyé à Claude.">Mode démo</span>{/if}
-    <button class="btn-texte" onclick={logout}>Se déconnecter</button>
   </div>
 </header>
 {#if app.settings?.mock}<p class="demo-band">Mode démo : noms fictifs, rien n’est envoyé à Claude.</p>{/if}

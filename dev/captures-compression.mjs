@@ -1,8 +1,7 @@
 // Captures des trois traitements (Renommer, Compresser, Les deux) pour revue de design, à 1280, 1024 et 375 px.
 // Aucun appel à Claude : en « Les deux », les statuts de nommage sont posés à la main ; la compression, elle, tourne pour de vrai.
-//   RENOMMEUR_PW=… node <pilote-cdp> dev/captures-compression.mjs <dossier-captures>
+//   node <pilote-cdp> dev/captures-compression.mjs <dossier-captures>
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 const LOT = ['compression/grande.jpg', 'compression/photo.png', 'compression/detoure.png', 'compression/capture.png', 'compression/photo-exif6.jpg', 'vitrine.jpg', 'Document numérisé 3.pdf', 'IMG_4410.HEIC'];
 const NOMS = ['facade-hotel-de-ville-saumur-panorama', 'salon-lumineux-canape-gris', 'chaise-design-detouree-fond-transparent', 'capture-tableau-de-bord-statistiques', 'portrait-artisan-atelier-bois', 'vitrine-boulangerie-martin-annecy', 'carte-des-patisseries-boulangerie-martin', ''];
 const CONTEXTE = 'Boulangerie Martin à Annecy, photos de la vitrine et des produits pour la page Boutique.';
@@ -101,7 +100,7 @@ export const scenarios = [
     nom: 'États vides',
     async run(p, log) {
       await p.goto(BASE, { width: 1280, height: 860 });
-      await p.eval(`await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})}); localStorage.removeItem('renommeur.squeeze');`);
+      await p.eval(`localStorage.removeItem('renommeur.squeeze');`);
       for (const width of [1280, 1024]) {
         for (const m of ['rename', 'compress', 'both']) {
           await p.goto(BASE, { width, height: 860 });

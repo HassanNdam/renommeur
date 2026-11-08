@@ -68,7 +68,6 @@ const OUTPUT_SCHEMA = [
 @set_time_limit(180);
 
 $body = read_json_body(16 * 1024 * 1024);
-require_auth();
 $config = config();
 
 $context = clean_text((string) ($body['context'] ?? ''), 600);

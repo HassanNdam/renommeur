@@ -1,0 +1,43 @@
+# Contrôles automatiques : à chaque push sur les branches git flow et à chaque pull request.
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'bugfix/**', 'release/**', 'hotfix/**']
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  front:
+    name: Interface (types, tests, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - name: Version de l'API alignée sur package.json
+        run: node scripts/sync-version.mjs --check
+
+  api:
+    name: API PHP (syntaxe, dépendances)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+      - name: Syntaxe PHP
+        run: for f in api/*.php; do php -l "$f"; done
+      - run: composer validate --no-check-publish --working-dir=api
+      - run: composer install --no-interaction --no-progress --working-dir=api

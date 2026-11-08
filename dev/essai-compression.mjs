@@ -1,9 +1,8 @@
 // Essai de la compression dans la vraie interface, en mode « Compresser » (aucun appel à Claude) :
-//   RENOMMEUR_PW=… node <pilote-cdp> dev/essai-compression.mjs <dossier-captures>
+//   node <pilote-cdp> dev/essai-compression.mjs <dossier-captures>
 // Lot : dev/fixtures/compression (photos lourdes, PNG photo, détouré, capture, portrait EXIF 6) + quelques
 // fichiers des fixtures de base (petit JPEG, faux HEIC, Word) pour les cas « déjà légère », « illisible », « tel quel ».
 const BASE = 'http://localhost:5173/';
-const PW = process.env.RENOMMEUR_PW ?? '';
 const LOT = process.env.RENOMMEUR_LOT ? JSON.parse(process.env.RENOMMEUR_LOT) : [
   'compression/grande.jpg',
   'compression/photo.jpg',
@@ -48,8 +47,7 @@ export const scenarios = [
     nom: 'Compression seule, réglages par défaut',
     async run(p, log) {
       await p.goto(BASE, { width: 1280, height: 900 });
-      await p.eval(`await fetch('api/login.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: ${JSON.stringify(PW)}})});
-        localStorage.removeItem('renommeur.squeeze');`);
+      await p.eval(`localStorage.removeItem('renommeur.squeeze');`);
       await p.goto(BASE, { width: 1280, height: 900 });
       await p.eval(`window.__renommeur.setMode('compress'); ${FONDU}`);
       log(await shot(p, 'c01-vide-compresser-1280'));

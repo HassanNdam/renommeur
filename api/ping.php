@@ -13,7 +13,6 @@ use Anthropic\Core\Exceptions\APIConnectionException;
 use Anthropic\Core\Exceptions\APIStatusException;
 
 read_json_body(1024);
-require_auth();
 $config = config();
 
 if ($config['mock']) {

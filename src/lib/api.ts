@@ -78,9 +78,7 @@ async function call<T>(path: string, body?: unknown, timeoutMs = 30_000): Promis
 }
 
 export const api = {
-  session: () => call<{ authenticated: boolean; settings?: Settings }>('session.php'),
-  login: (password: string) => call<{ ok: true }>('login.php', { password }),
-  logout: () => call<{ ok: true }>('logout.php', {}),
+  settings: () => call<Settings>('settings.php'),
   ping: () => call<{ ok: boolean; reason?: string; mock?: boolean }>('ping.php', {}, 20_000),
   name: (context: string, lang: 'fr' | 'en', items: NamingItem[]) =>
     call<{ files: NamedFile[]; mock?: boolean }>('name.php', { context, lang, items }, 150_000),

@@ -17,7 +17,7 @@ function phpApi(): Plugin {
     apply: 'serve',
     async configureServer(server) {
       if (process.env.VITEST) return;
-      const running = await fetch(`${API}/session.php`, { signal: AbortSignal.timeout(800) }).then(
+      const running = await fetch(`${API}/settings.php`, { signal: AbortSignal.timeout(800) }).then(
         () => true,
         () => false,
       );
